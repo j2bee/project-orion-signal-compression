@@ -41,6 +41,11 @@ def reconstruct(compressed: Dict, method: str = None) -> np.ndarray:
         "quantization": decompress_quantization,
     }
 
+    # Extended research methods
+    extended = {"windowed_fft", "event_aware", "pca"}
+    if method in extended:
+        return _reconstruct_extended(compressed, method)
+
     # v2 methods (lazy import to keep v1 dependency-free)
     v2_methods = {
         "adaptive_fft", "soft_wavelet", "mulaw", "hybrid", "ml",
@@ -50,7 +55,8 @@ def reconstruct(compressed: Dict, method: str = None) -> np.ndarray:
 
     if method not in dispatch:
         raise ValueError(
-            f"Unknown method '{method}'. Supported: {list(dispatch.keys()) + list(v2_methods)}"
+            f"Unknown method '{method}'. Supported: "
+            f"{list(dispatch.keys()) + list(v2_methods) + list(extended)}"
         )
 
     return dispatch[method](compressed)
@@ -74,6 +80,20 @@ def _reconstruct_v2(compressed: Dict, method: str) -> np.ndarray:
         from ..ml.autoencoder import decompress_ml
         return decompress_ml(compressed)
     raise ValueError(f"Unknown v2 method: {method}")
+
+
+def _reconstruct_extended(compressed: Dict, method: str) -> np.ndarray:
+    """Dispatch research extension reconstruction methods."""
+    if method == "windowed_fft":
+        from ..compression.windowed import decompress_windowed_fft
+        return decompress_windowed_fft(compressed)
+    elif method == "event_aware":
+        from ..v2.compression.event_aware import decompress_event_aware
+        return decompress_event_aware(compressed)
+    elif method == "pca":
+        from ..research.classical_extensions import decompress_pca
+        return decompress_pca(compressed)
+    raise ValueError(f"Unknown extended method: {method}")
 
 
 def reconstruct_and_compare(

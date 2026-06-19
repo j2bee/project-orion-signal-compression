@@ -1,0 +1,62 @@
+{
+  "time_domain": {
+    "mean": 4.1132054109900205,
+    "variance": 41.343323832230766,
+    "std": 6.42987743524173,
+    "rms": 7.632940625029671,
+    "peak": 32.65672999789793,
+    "peak_to_peak": 34.22217681462725,
+    "min": -1.5654468167293107,
+    "max": 32.65672999789793,
+    "n_samples": 20000,
+    "duration_s": 99.995
+  },
+  "frequency_domain": {
+    "dominant_frequencies": [
+      {
+        "frequency_hz": 0.0,
+        "magnitude": 4.1132054109900205
+      },
+      {
+        "frequency_hz": 0.01,
+        "magnitude": 2.557140547699323
+      },
+      {
+        "frequency_hz": 0.02,
+        "magnitude": 2.2817301173177773
+      },
+      {
+        "frequency_hz": 0.03,
+        "magnitude": 1.8057757211639365
+      },
+      {
+        "frequency_hz": 0.04,
+        "magnitude": 1.2204186634986458
+      },
+      {
+        "frequency_hz": 0.05,
+        "magnitude": 0.7490300348453772
+      },
+      {
+        "frequency_hz": 0.07,
+        "magnitude": 0.6633720519304878
+      },
+      {
+        "frequency_hz": 0.06,
+        "magnitude": 0.6269670145021182
+      },
+      {
+        "frequency_hz": 0.08,
+        "magnitude": 0.6110629748983415
+      },
+      {
+        "frequency_hz": 3.5,
+        "magnitude": 0.48580373707150365
+      }
+    ],
+    "total_spectral_energy": 37.590120695469246,
+    "signal_band_energy": 37.59000055194842,
+    "noise_band_energy": 0.00012014352082170696,
+    "noise_fraction": 3.1961461841272544e-06
+  }
+}

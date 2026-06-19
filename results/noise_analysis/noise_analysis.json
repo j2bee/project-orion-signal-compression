@@ -1,0 +1,35 @@
+{
+  "gaussian_sweep": [
+    {
+      "target_snr_db": 5,
+      "actual_snr_db": 4.95911698669632,
+      "type": "gaussian"
+    },
+    {
+      "target_snr_db": 10,
+      "actual_snr_db": 9.968391896560044,
+      "type": "gaussian"
+    },
+    {
+      "target_snr_db": 20,
+      "actual_snr_db": 19.97668644673869,
+      "type": "gaussian"
+    },
+    {
+      "target_snr_db": 40,
+      "actual_snr_db": 40.02344049904718,
+      "type": "gaussian"
+    }
+  ],
+  "impulse": {
+    "type": "impulse",
+    "probability": 0.005,
+    "n_spikes": 100
+  },
+  "frequency_interference": {
+    "type": "frequency_interference",
+    "frequency_hz": 50.0,
+    "amplitude": 0.6429877435241731,
+    "actual_snr_db": 24.50008374715608
+  }
+}

@@ -58,6 +58,21 @@ def estimate_compressed_size(compressed: Dict) -> int:
         latent_dim = compressed["latent_dim"]
         return n_patches * latent_dim * 4  # float32 latents
 
+    elif method == "windowed_fft":
+        return sum(estimate_compressed_size(w) for w in compressed["windows"])
+
+    elif method == "event_aware":
+        return (
+            estimate_compressed_size(compressed["fft_high"])
+            + estimate_compressed_size(compressed["fft_low"])
+            + estimate_compressed_size(compressed["wavelet_residual"])
+        )
+
+    elif method == "pca":
+        n_patches = compressed["n_patches"]
+        n_comp = compressed["n_components"]
+        return n_patches * n_comp * 4 + compressed["components"].nbytes
+
     return 0
 
 
