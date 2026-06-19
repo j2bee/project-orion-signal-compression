@@ -1,32 +1,57 @@
 {
+  "version": "v2",
   "input": "data/raw/synthetic_rocket.csv",
-  "method": "fft",
-  "compression_rate": 0.1,
+  "method": "hybrid",
+  "compression_rate": 0.85,
   "wavelet": null,
   "metrics": {
-    "compression_ratio": 6.67,
-    "mse": 1.030405,
-    "rmse": 1.015089,
-    "snr_db": 26.95
+    "compression_ratio": 2.22,
+    "mse": 1.3e-05,
+    "rmse": 0.003653,
+    "snr_db": 53.33,
+    "vs_clean": {
+      "mse": 54.720646,
+      "snr_db": 0.27
+    },
+    "segments": {
+      "pre_launch": {
+        "mse": 118.98935773,
+        "rmse": 10.90822432,
+        "snr_db": -0.92,
+        "n_samples": 2000
+      },
+      "launch": {
+        "mse": 408.37948012,
+        "rmse": 20.20840123,
+        "snr_db": 0.53,
+        "n_samples": 2000
+      },
+      "flight": {
+        "mse": 2.77967739,
+        "rmse": 1.66723645,
+        "snr_db": 1.11,
+        "n_samples": 14000
+      },
+      "descent": {
+        "mse": 0.37966442,
+        "rmse": 0.61616915,
+        "snr_db": -2.46,
+        "n_samples": 1999
+      }
+    }
   },
   "metadata": {
     "sampling_frequency": 200.0,
     "n_samples": 20000,
     "duration": 99.995,
-    "mean": 3.6331108203664537,
-    "std": 6.4094264851227445,
-    "min": -1.6561175765113243,
-    "max": 42.02566537687231,
-    "peak_to_peak": 43.68178295338364
+    "mean": 4.1132054109900205,
+    "std": 6.42987743524173,
+    "min": -1.5654468167293107,
+    "max": 32.65672999789793,
+    "peak_to_peak": 34.22217681462725
   },
   "noise_applied": true,
   "filter_applied": true,
-  "execution_time_seconds": 1.051,
-  "plots": {
-    "original": "results/plots/pipeline_original.png",
-    "noisy": "results/plots/pipeline_noisy.png",
-    "filtered": "results/plots/pipeline_filtered.png",
-    "reconstructed": "results/plots/pipeline_reconstructed.png",
-    "comparison": "results/plots/pipeline_comparison.png"
-  }
+  "execution_time_seconds": 0.046,
+  "plots": {}
 }

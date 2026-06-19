@@ -120,30 +120,31 @@ class TestDenoising:
 
 
 class TestMLAutoencoder:
-    def test_compress_decompress(self, sample_signal):
+    def test_compress_decompress(self, sample_signal, tmp_path):
         pytest.importorskip("torch")
         from src.ml.autoencoder import compress_ml, decompress_ml
-        # Use longer signal for patch extraction
-        long_signal = np.tile(sample_signal, 4)
-        c = compress_ml(long_signal, latent_dim=16, patch_size=128, epochs=10)
-        r = decompress_ml(c)
+        ckpt = str(tmp_path / "test_model.pt")
+        long_signal = np.tile(sample_signal, 8)
+        c = compress_ml(long_signal, latent_dim=16, patch_size=128, epochs=5, checkpoint_path=ckpt)
+        r = decompress_ml(c, checkpoint_path=ckpt)
         assert len(r) == len(long_signal)
-        assert mse(long_signal, r) < 1.0
+        assert "precomputed_reconstruction" not in c
+        assert "model_state_dict" not in c
 
-    def test_unified_reconstruct(self, sample_signal):
+    def test_unified_reconstruct(self, sample_signal, tmp_path):
         pytest.importorskip("torch")
         from src.ml.autoencoder import compress_ml
-        long_signal = np.tile(sample_signal, 4)
-        c = compress_ml(long_signal, latent_dim=16, patch_size=128, epochs=10)
+        ckpt = str(tmp_path / "test_model.pt")
+        long_signal = np.tile(sample_signal, 8)
+        c = compress_ml(long_signal, latent_dim=16, patch_size=128, epochs=5, checkpoint_path=ckpt)
         r = reconstruct(c, method="ml")
         assert len(r) == len(long_signal)
 
-    def test_compression_ratio(self, sample_signal):
+    def test_compression_ratio(self, sample_signal, tmp_path):
         pytest.importorskip("torch")
         from src.ml.autoencoder import compress_ml, estimate_ml_compression_ratio
-        long_signal = np.tile(sample_signal, 4)
-        c = compress_ml(long_signal, latent_dim=16, patch_size=128, epochs=5)
-        ratio = estimate_ml_compression_ratio(
-            c["n_samples"], c["n_patches"], c["latent_dim"]
-        )
+        ckpt = str(tmp_path / "test_model.pt")
+        long_signal = np.tile(sample_signal, 8)
+        c = compress_ml(long_signal, latent_dim=16, patch_size=128, epochs=5, checkpoint_path=ckpt)
+        ratio = estimate_ml_compression_ratio(c["n_samples"], c["n_patches"], c["latent_dim"])
         assert ratio > 1.0

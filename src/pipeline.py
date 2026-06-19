@@ -31,6 +31,7 @@ from src.data_loader.validation import validate_signal
 from src.metrics.compression_ratio import compression_ratio, format_metrics_report
 from src.metrics.mse import mse, rmse
 from src.metrics.snr import snr_db
+from src.metrics.segmented import compute_segment_metrics, default_rocket_segments
 from src.preprocessing.filtering import butterworth_lowpass
 from src.preprocessing.noise import apply_all_noise
 from src.reconstruction.reconstruction import reconstruct
@@ -58,7 +59,10 @@ def compress_signal_v2(
     method: str,
     rate: float,
     wavelet: str = "db4",
-    ml_epochs: int = 50,
+    ml_epochs: int = 80,
+    residual_rate: float = 0.15,
+    target_ratio: float = None,
+    ml_checkpoint: str = None,
 ) -> dict:
     """v2 improved compression dispatch."""
     if method == "adaptive_fft":
@@ -73,11 +77,18 @@ def compress_signal_v2(
         return compress_mulaw(signal, bits=bits)
     elif method == "hybrid":
         from src.v2.compression.hybrid import compress_hybrid
-        return compress_hybrid(signal, energy_keep_fraction=rate, wavelet=wavelet)
+        return compress_hybrid(
+            signal,
+            energy_keep_fraction=rate,
+            residual_keep_percentage=residual_rate,
+            wavelet=wavelet,
+            target_ratio=target_ratio,
+        )
     elif method == "ml":
-        from src.ml.autoencoder import compress_ml
+        from src.ml.autoencoder import compress_ml, DEFAULT_CHECKPOINT
         latent_dim = int(rate) if rate >= 1 else 32
-        return compress_ml(signal, latent_dim=latent_dim, epochs=ml_epochs)
+        ckpt = ml_checkpoint or DEFAULT_CHECKPOINT
+        return compress_ml(signal, latent_dim=latent_dim, epochs=ml_epochs, checkpoint_path=ckpt)
     raise ValueError(f"Unknown v2 method: {method}")
 
 
@@ -87,24 +98,33 @@ def compress_signal(
     rate: float,
     wavelet: str = "db4",
     version: str = "v2",
-    ml_epochs: int = 50,
+    ml_epochs: int = 80,
+    residual_rate: float = 0.15,
+    target_ratio: float = None,
+    ml_checkpoint: str = None,
 ) -> dict:
     """Dispatch compression to v1 or v2 implementation."""
     if version == "v1":
         return compress_signal_v1(signal, method, rate, wavelet)
-    return compress_signal_v2(signal, method, rate, wavelet, ml_epochs)
+    return compress_signal_v2(
+        signal, method, rate, wavelet, ml_epochs, residual_rate, target_ratio, ml_checkpoint
+    )
 
 
 def run_pipeline(
     input_path: str,
-    compression_method: str = "adaptive_fft",
-    compression_rate: float = 0.90,
+    compression_method: str = "hybrid",
+    compression_rate: float = 0.85,
     wavelet: str = "db4",
     add_noise: bool = True,
     filter_signal: bool = True,
     output_dir: str = "results",
     version: str = "v2",
-    ml_epochs: int = 50,
+    ml_epochs: int = 80,
+    residual_rate: float = 0.15,
+    target_ratio: float = None,
+    ml_checkpoint: str = None,
+    skip_plots: bool = False,
 ) -> dict:
     """
     Execute the full signal compression pipeline.
@@ -187,7 +207,8 @@ def run_pipeline(
     # --- Stage 4: Compress ---
     print(f"[4/7] Compressing with {compression_method} ({version}, rate={compression_rate})")
     compressed = compress_signal(
-        working_signal, compression_method, compression_rate, wavelet, version, ml_epochs
+        working_signal, compression_method, compression_rate, wavelet, version,
+        ml_epochs, residual_rate, target_ratio, ml_checkpoint,
     )
 
     # --- Stage 5: Reconstruct ---
@@ -197,35 +218,55 @@ def run_pipeline(
 
     # --- Stage 6: Metrics ---
     print("[6/7] Calculating metrics")
+    # Metrics vs filtered (pre-compression) input
     mse_val = mse(working_signal, reconstructed)
     rmse_val = rmse(working_signal, reconstructed)
     snr_val = snr_db(working_signal, reconstructed)
     ratio_val = compression_ratio(working_signal, compressed)
+
+    # Metrics vs clean original (end-to-end fidelity)
+    mse_clean = mse(signal, reconstructed)
+    snr_clean = snr_db(signal, reconstructed)
+
+    # Per-phase segmented metrics vs clean original
+    segments = default_rocket_segments(metadata["duration"])
+    segment_metrics = compute_segment_metrics(
+        time_arr, signal, reconstructed, segments
+    )
 
     report = format_metrics_report(
         f"{compression_method} ({version})",
         compressed, working_signal, reconstructed,
         mse_val, rmse_val, snr_val,
     )
-    print(f"\n{report}\n")
+    print(f"\n{report}")
+    print(f"  vs clean original: MSE={mse_clean:.6f}, SNR={snr_clean:.1f} dB\n")
+    if segment_metrics:
+        print("  Segment SNR (vs clean):")
+        for phase, sm in segment_metrics.items():
+            print(f"    {phase:12s}  SNR={sm['snr_db']:6.1f} dB  MSE={sm['mse']:.6f}")
+        print()
 
     # --- Stage 7: Save plots and results ---
-    print("[7/7] Saving plots and results")
-    plot_paths = plot_pipeline_stages(
-        time_arr, stages, fs, save_dir=str(plots_dir), prefix=f"pipeline_{version}"
-    )
-
-    comparison_path = plots_dir / f"pipeline_{version}_comparison.png"
-    plot_comparison(
-        time_arr,
-        working_signal,
-        reconstructed,
-        original_label="Pre-compression",
-        processed_label="Reconstructed",
-        title=f"{compression_method.upper()} ({version}) rate={compression_rate}",
-        save_path=str(comparison_path),
-    )
-    plot_paths["comparison"] = str(comparison_path)
+    plot_paths = {}
+    if not skip_plots:
+        print("[7/7] Saving plots and results")
+        plot_paths = plot_pipeline_stages(
+            time_arr, stages, fs, save_dir=str(plots_dir), prefix=f"pipeline_{version}"
+        )
+        comparison_path = plots_dir / f"pipeline_{version}_comparison.png"
+        plot_comparison(
+            time_arr,
+            working_signal,
+            reconstructed,
+            original_label="Pre-compression",
+            processed_label="Reconstructed",
+            title=f"{compression_method.upper()} ({version}) rate={compression_rate}",
+            save_path=str(comparison_path),
+        )
+        plot_paths["comparison"] = str(comparison_path)
+    else:
+        print("[7/7] Skipping plots (--skip-plots)")
 
     elapsed = time.time() - start_time
     results = {
@@ -239,6 +280,11 @@ def run_pipeline(
             "mse": round(mse_val, 6),
             "rmse": round(rmse_val, 6),
             "snr_db": round(snr_val, 2),
+            "vs_clean": {
+                "mse": round(mse_clean, 6),
+                "snr_db": round(snr_clean, 2),
+            },
+            "segments": segment_metrics,
         },
         "metadata": metadata,
         "noise_applied": add_noise,
@@ -274,33 +320,46 @@ def main():
     )
     parser.add_argument(
         "--compression", "-c", choices=all_methods, default=None,
-        help="Compression method (default: fft for v1, adaptive_fft for v2)",
+        help="Compression method (default: fft for v1, hybrid for v2)",
     )
     parser.add_argument(
         "--compression_rate", "-r", type=float, default=None,
-        help="Rate parameter (default: 0.1 for v1, 0.90 for v2 adaptive_fft)",
+        help="Rate parameter (default: 0.1 for v1, 0.85 for v2 hybrid energy fraction)",
+    )
+    parser.add_argument(
+        "--residual-rate", type=float, default=0.15,
+        help="Wavelet residual keep fraction for hybrid compression",
+    )
+    parser.add_argument(
+        "--target-ratio", type=float, default=None,
+        help="Target compression ratio for hybrid (auto-tunes internal params)",
     )
     parser.add_argument("--wavelet", "-w", default="db4")
     parser.add_argument("--no-noise", action="store_true")
     parser.add_argument("--no-filter", action="store_true")
     parser.add_argument("--output", "-o", default="results")
     parser.add_argument("--generate-data", action="store_true")
+    parser.add_argument("--skip-plots", action="store_true", help="Skip plot generation")
     parser.add_argument(
-        "--ml-epochs", type=int, default=50,
+        "--ml-epochs", type=int, default=80,
         help="Training epochs for ML compression",
+    )
+    parser.add_argument(
+        "--ml-checkpoint", type=str, default=None,
+        help="Path for ML model checkpoint weights",
     )
 
     args = parser.parse_args()
 
     # Set version-appropriate defaults
     if args.compression is None:
-        args.compression = "fft" if args.version == "v1" else "adaptive_fft"
+        args.compression = "fft" if args.version == "v1" else "hybrid"
     if args.compression_rate is None:
-        args.compression_rate = 0.1 if args.version == "v1" else 0.90
+        args.compression_rate = 0.1 if args.version == "v1" else 0.85
 
     if args.generate_data or not Path(args.input).exists():
         from src.generate_synthetic import create_synthetic_dataset
-        print("Generating synthetic rocket telemetry...")
+        print("Generating clean synthetic rocket telemetry...")
         create_synthetic_dataset(args.input)
 
     results = run_pipeline(
@@ -313,6 +372,10 @@ def main():
         output_dir=args.output,
         version=args.version,
         ml_epochs=args.ml_epochs,
+        residual_rate=args.residual_rate,
+        target_ratio=args.target_ratio,
+        ml_checkpoint=args.ml_checkpoint,
+        skip_plots=args.skip_plots,
     )
 
     print(f"\n=== Pipeline Complete ({results['version'].upper()}) ===")

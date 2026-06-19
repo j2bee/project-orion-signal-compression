@@ -70,16 +70,19 @@ Location: `src/ml/autoencoder.py`
 
 Run with `python3 experiments/compare_v1_v2.py`.
 
-| Metric | v1 FFT 10% | v2 Hybrid | v2 Soft Wavelet |
-|--------|------------|-----------|-----------------|
-| SNR (dB) | 26.9 | **51.0** | **51.0** |
-| MSE | 1.030 | **0.000026** | **0.000027** |
-| Compression | 6.7× | 2.7× | 2.7× |
+| Metric | v1 FFT 10% | v2 Hybrid (refined) | v2 Soft Wavelet |
+|--------|------------|---------------------|-----------------|
+| SNR vs working (dB) | 26.9 | **53.3** | **59.2** |
+| MSE vs working | 1.030 | **0.000013** | **0.000027** |
+| Compression | 6.7× | 2.2× | 2.2× |
+| SNR vs clean (dB) | — | 0.3 | 0.4 |
 
 | Denoising | v1 Butterworth | v2 Multi-stage |
 |-----------|----------------|----------------|
 | SNR vs clean (dB) | -8.3 | **0.4** |
 | MSE vs clean | 366.1 | **49.7** |
+
+**Refinements (latest):** Clean synthetic data (no double-noising), adaptive FFT coefficient cap, hybrid as default, segmented per-phase metrics, honest ML latent-only payload.
 
 *v1 code preserved in `src/compression/`, `src/preprocessing/` — unchanged.*
 

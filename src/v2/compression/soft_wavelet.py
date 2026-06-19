@@ -1,8 +1,8 @@
-"""Soft-threshold wavelet compression (v2).
+"""Soft-threshold wavelet compression (v2, refined).
 
-Uses Donoho-Johnstone universal threshold with soft shrinkage instead of
-v1's hard keep-percentage cutoff. Soft thresholding reduces artifacts
-and improves SNR for the same number of non-zero coefficients.
+Uses Donoho-Johnstone universal threshold with noise estimated from the
+finest detail subband (standard practice). Threshold is tuned to hit a
+target sparsity level for predictable compression ratios.
 """
 
 from typing import Dict, Optional
@@ -11,34 +11,35 @@ import numpy as np
 import pywt
 
 
-def _universal_threshold(coeffs: np.ndarray, sigma: Optional[float] = None) -> float:
+def _estimate_sigma_from_detail(coeffs_list: list) -> float:
     """
-    Compute Donoho-Johnstone universal threshold: sigma * sqrt(2 * log(n)).
+    Estimate noise std from finest detail subband via MAD.
 
-    Parameters
-    ----------
-    coeffs : np.ndarray
-        Wavelet coefficients.
-    sigma : float, optional
-        Noise std estimate. Uses MAD of finest detail if None.
-
-    Returns
-    -------
-    float
-        Threshold value.
+    Standard wavelet denoising practice: detail coefficients at the
+    highest scale are mostly noise-dominated.
     """
-    n = len(coeffs)
-    if sigma is None:
-        # Median absolute deviation estimate (robust to outliers)
-        sigma = float(np.median(np.abs(coeffs)) / 0.6745)
-        if sigma == 0:
-            sigma = float(np.std(coeffs))
+    detail = coeffs_list[-1]
+    sigma = float(np.median(np.abs(detail)) / 0.6745)
+    if sigma == 0:
+        sigma = float(np.std(detail))
+    return sigma
+
+
+def _universal_threshold(n: int, sigma: float) -> float:
+    """Donoho-Johnstone universal threshold: sigma * sqrt(2 * log(n))."""
     return sigma * np.sqrt(2.0 * np.log(max(n, 2)))
 
 
 def _soft_threshold(coeffs: np.ndarray, threshold: float) -> np.ndarray:
     """Apply soft thresholding: sign(x) * max(|x| - T, 0)."""
     return np.sign(coeffs) * np.maximum(np.abs(coeffs) - threshold, 0.0)
+
+
+def _threshold_for_sparsity(magnitudes: np.ndarray, keep_percentage: float) -> float:
+    """Find threshold that leaves approximately keep_percentage non-zero."""
+    n_keep = max(1, int(len(magnitudes) * keep_percentage))
+    sorted_mag = np.sort(magnitudes)
+    return float(sorted_mag[-n_keep])
 
 
 def compress_soft_wavelet(
@@ -49,9 +50,6 @@ def compress_soft_wavelet(
 ) -> Dict:
     """
     Compress using wavelet decomposition with soft thresholding.
-
-    Threshold is scaled so approximately `keep_percentage` of coefficients
-    remain non-zero after soft shrinkage.
 
     Parameters
     ----------
@@ -78,13 +76,10 @@ def compress_soft_wavelet(
     coeffs_list = pywt.wavedec(signal, wavelet, level=level)
     coeffs, coeff_slices = pywt.coeffs_to_array(coeffs_list)
 
-    # Scale universal threshold to hit target sparsity
-    base_threshold = _universal_threshold(coeffs)
-    magnitudes = np.abs(coeffs)
-    sorted_mag = np.sort(magnitudes)
-    n_keep = max(1, int(len(coeffs) * keep_percentage))
-    target_mag = sorted_mag[-n_keep]
-    threshold = min(base_threshold, target_mag)
+    sigma = _estimate_sigma_from_detail(coeffs_list)
+    universal = _universal_threshold(len(coeffs), sigma)
+    sparsity_threshold = _threshold_for_sparsity(np.abs(coeffs), keep_percentage)
+    threshold = min(universal, sparsity_threshold)
 
     thresholded = _soft_threshold(coeffs, threshold)
     kept_mask = np.abs(thresholded) > 0
