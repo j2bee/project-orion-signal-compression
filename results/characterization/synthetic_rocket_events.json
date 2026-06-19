@@ -1,0 +1,350 @@
+{
+  "n_events": 43,
+  "events": [
+    {
+      "type": "vibration_onset",
+      "time_s": 10.23,
+      "index": 2046,
+      "confidence": 4.44,
+      "method": "moving_variance"
+    },
+    {
+      "type": "amplitude_peak",
+      "time_s": 10.91,
+      "index": 2182,
+      "amplitude": 31.9912,
+      "confidence": 1.03,
+      "method": "peak_detection"
+    },
+    {
+      "type": "amplitude_peak",
+      "time_s": 11.655,
+      "index": 2331,
+      "amplitude": 31.9421,
+      "confidence": 1.03,
+      "method": "peak_detection"
+    },
+    {
+      "type": "energy_burst",
+      "time_s": 12.45,
+      "index": 2490,
+      "confidence": 1.48,
+      "method": "local_rms"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 20.46,
+      "index": 4092,
+      "confidence": 1.26,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 21.16,
+      "index": 4232,
+      "confidence": 1.22,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 22.0,
+      "index": 4400,
+      "confidence": 1.3,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 22.555,
+      "index": 4511,
+      "confidence": 1.84,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 24.0,
+      "index": 4800,
+      "confidence": 1.28,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 24.555,
+      "index": 4911,
+      "confidence": 1.78,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 26.0,
+      "index": 5200,
+      "confidence": 1.26,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 26.555,
+      "index": 5311,
+      "confidence": 1.73,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 28.0,
+      "index": 5600,
+      "confidence": 1.24,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 28.555,
+      "index": 5711,
+      "confidence": 1.67,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 30.0,
+      "index": 6000,
+      "confidence": 1.22,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 30.555,
+      "index": 6111,
+      "confidence": 1.62,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 32.0,
+      "index": 6400,
+      "confidence": 1.2,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 32.555,
+      "index": 6511,
+      "confidence": 1.57,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 34.0,
+      "index": 6800,
+      "confidence": 1.19,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 34.555,
+      "index": 6911,
+      "confidence": 1.52,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 36.0,
+      "index": 7200,
+      "confidence": 1.17,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 36.555,
+      "index": 7311,
+      "confidence": 1.47,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 38.0,
+      "index": 7600,
+      "confidence": 1.15,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 38.555,
+      "index": 7711,
+      "confidence": 1.43,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 40.0,
+      "index": 8000,
+      "confidence": 1.13,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 40.555,
+      "index": 8111,
+      "confidence": 1.38,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 42.0,
+      "index": 8400,
+      "confidence": 1.11,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 42.555,
+      "index": 8511,
+      "confidence": 1.34,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 44.0,
+      "index": 8800,
+      "confidence": 1.09,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 44.555,
+      "index": 8911,
+      "confidence": 1.29,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 46.0,
+      "index": 9200,
+      "confidence": 1.08,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 46.555,
+      "index": 9311,
+      "confidence": 1.25,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 48.0,
+      "index": 9600,
+      "confidence": 1.06,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 48.555,
+      "index": 9711,
+      "confidence": 1.21,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 50.0,
+      "index": 10000,
+      "confidence": 1.04,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 50.555,
+      "index": 10111,
+      "confidence": 1.18,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 52.0,
+      "index": 10400,
+      "confidence": 1.03,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 52.555,
+      "index": 10511,
+      "confidence": 1.14,
+      "method": "moving_variance"
+    },
+    {
+      "type": "rapid_change",
+      "time_s": 54.0,
+      "index": 10800,
+      "confidence": 1.01,
+      "method": "derivative_threshold"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 54.555,
+      "index": 10911,
+      "confidence": 1.1,
+      "method": "moving_variance"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 56.555,
+      "index": 11311,
+      "confidence": 1.07,
+      "method": "moving_variance"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 58.555,
+      "index": 11711,
+      "confidence": 1.04,
+      "method": "moving_variance"
+    },
+    {
+      "type": "vibration_onset",
+      "time_s": 60.555,
+      "index": 12111,
+      "confidence": 1.0,
+      "method": "moving_variance"
+    }
+  ],
+  "phase_reference": [
+    {
+      "phase": "pre_launch",
+      "start_s": 0.0,
+      "end_s": 10.0
+    },
+    {
+      "phase": "launch",
+      "start_s": 10.0,
+      "end_s": 20.0
+    },
+    {
+      "phase": "flight",
+      "start_s": 20.0,
+      "end_s": 90.0
+    },
+    {
+      "phase": "descent",
+      "start_s": 90.0,
+      "end_s": 99.995
+    }
+  ],
+  "mission_critical_regions": [
+    {
+      "phase": "launch",
+      "start_s": 10.0,
+      "end_s": 20.0,
+      "description": "Ignition and thrust spike \u2014 highest compression sensitivity"
+    },
+    {
+      "phase": "flight",
+      "start_s": 20.0,
+      "end_s": 90.0,
+      "description": "Vibration \u2014 moderate importance, repetitive structure"
+    },
+    {
+      "phase": "descent",
+      "start_s": 90.0,
+      "end_s": 100.0,
+      "description": "Engine cutoff / descent \u2014 lower amplitude"
+    }
+  ]
+}

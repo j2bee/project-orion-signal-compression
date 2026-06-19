@@ -1,0 +1,178 @@
+{
+  "input": "data/raw/synthetic_rocket.csv",
+  "metadata": {
+    "sampling_frequency": 200.0,
+    "n_samples": 20000,
+    "duration": 99.995,
+    "mean": 4.1132054109900205,
+    "std": 6.42987743524173,
+    "min": -1.5654468167293107,
+    "max": 32.65672999789793,
+    "peak_to_peak": 34.22217681462725
+  },
+  "frequency": {
+    "name": "synthetic_rocket",
+    "n_samples": 20000,
+    "sampling_frequency_hz": 200.0,
+    "dominant_frequencies": [
+      {
+        "hz": 0.0,
+        "magnitude": 4.113205,
+        "power_fraction": 0.4501
+      },
+      {
+        "hz": 0.01,
+        "magnitude": 2.557141,
+        "power_fraction": 0.174
+      },
+      {
+        "hz": 0.02,
+        "magnitude": 2.28173,
+        "power_fraction": 0.1385
+      },
+      {
+        "hz": 0.03,
+        "magnitude": 1.805776,
+        "power_fraction": 0.0867
+      },
+      {
+        "hz": 0.04,
+        "magnitude": 1.220419,
+        "power_fraction": 0.0396
+      },
+      {
+        "hz": 0.05,
+        "magnitude": 0.74903,
+        "power_fraction": 0.0149
+      },
+      {
+        "hz": 0.07,
+        "magnitude": 0.663372,
+        "power_fraction": 0.0117
+      },
+      {
+        "hz": 0.06,
+        "magnitude": 0.626967,
+        "power_fraction": 0.0105
+      },
+      {
+        "hz": 0.08,
+        "magnitude": 0.611063,
+        "power_fraction": 0.0099
+      },
+      {
+        "hz": 3.5,
+        "magnitude": 0.485804,
+        "power_fraction": 0.0063
+      },
+      {
+        "hz": 0.09,
+        "magnitude": 0.484939,
+        "power_fraction": 0.0063
+      },
+      {
+        "hz": 0.12,
+        "magnitude": 0.397322,
+        "power_fraction": 0.0042
+      },
+      {
+        "hz": 0.1,
+        "magnitude": 0.388215,
+        "power_fraction": 0.004
+      },
+      {
+        "hz": 0.11,
+        "magnitude": 0.378748,
+        "power_fraction": 0.0038
+      },
+      {
+        "hz": 0.13,
+        "magnitude": 0.372715,
+        "power_fraction": 0.0037
+      }
+    ],
+    "energy_concentration": {
+      "top_1pct": 0.9985,
+      "top_5pct": 0.9998,
+      "top_10pct": 0.9999
+    },
+    "band_energy_fraction": {
+      "dc_sub_hz_0_5": 0.9849,
+      "launch_dynamics_0_5_15": 0.0146,
+      "vibration_15_50": 0.0005,
+      "high_freq_noise_50_plus": 0.0
+    },
+    "gini_coefficient": 0.8909,
+    "is_frequency_sparse": true,
+    "fft_compression_appropriate": true,
+    "assessment": "YES \u2014 energy concentrated in few bins; FFT thresholding should work well."
+  },
+  "events": {
+    "n_events": 43
+  },
+  "sensitivity": {
+    "max_error": 2.39764596,
+    "fragile_regions": 8
+  },
+  "adaptive_experiment": {
+    "uniform": {
+      "keep_percentage": 0.1,
+      "mse": 0.00708391,
+      "snr_db": 39.15,
+      "compression_ratio": 1.0
+    },
+    "importance_weighted": {
+      "high_keep": 0.5,
+      "low_keep": 0.05,
+      "mse": 0.00521236,
+      "snr_db": 40.48,
+      "compression_ratio": 1.0
+    },
+    "improvement": {
+      "snr_gain_db": 1.33,
+      "mse_reduction_factor": 1.36
+    }
+  },
+  "noise": {
+    "signal_power": 58.261783,
+    "noise_power": 281.714407,
+    "snr_db": -6.84,
+    "residual_std": 8.116207,
+    "detected_noise_types": [
+      "impulse",
+      "periodic_interference"
+    ],
+    "tests": {
+      "gaussian": {
+        "is_gaussian": false,
+        "shapiro_p": 0.0
+      },
+      "impulse": {
+        "is_impulse": true,
+        "spike_fraction": 0.0047,
+        "spike_count": 94
+      },
+      "drift": {
+        "is_drift": false,
+        "slope": 0.00057543,
+        "r_squared": 0.1676
+      },
+      "periodic": {
+        "is_periodic": true,
+        "dominant_hz": 0.01,
+        "strength_ratio": 41.57
+      },
+      "quantization": {
+        "is_quantization": false,
+        "hist_peak_ratio": 26.53
+      }
+    }
+  },
+  "outputs": {
+    "dashboard": "results/characterization/synthetic_rocket_dashboard.png",
+    "dataset_report": "reports/dataset_characterization.md",
+    "failures_report": "reports/reconstruction_failures.md",
+    "research_answers": "reports/signal_research_answers.md",
+    "frequency_dir": "results/frequency_analysis/"
+  }
+}

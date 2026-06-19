@@ -1,0 +1,97 @@
+{
+  "name": "test",
+  "n_samples": 2000,
+  "sampling_frequency_hz": 20.0,
+  "dominant_frequencies": [
+    {
+      "hz": 0.0,
+      "magnitude": 3.617089,
+      "power_fraction": 0.3905
+    },
+    {
+      "hz": 0.01,
+      "magnitude": 2.532573,
+      "power_fraction": 0.1915
+    },
+    {
+      "hz": 0.02,
+      "magnitude": 2.257709,
+      "power_fraction": 0.1522
+    },
+    {
+      "hz": 0.03,
+      "magnitude": 1.782595,
+      "power_fraction": 0.0949
+    },
+    {
+      "hz": 0.04,
+      "magnitude": 1.191922,
+      "power_fraction": 0.0424
+    },
+    {
+      "hz": 0.05,
+      "magnitude": 0.684313,
+      "power_fraction": 0.014
+    },
+    {
+      "hz": 0.12,
+      "magnitude": 0.515595,
+      "power_fraction": 0.0079
+    },
+    {
+      "hz": 0.07,
+      "magnitude": 0.514235,
+      "power_fraction": 0.0079
+    },
+    {
+      "hz": 0.06,
+      "magnitude": 0.497112,
+      "power_fraction": 0.0074
+    },
+    {
+      "hz": 0.13,
+      "magnitude": 0.490042,
+      "power_fraction": 0.0072
+    },
+    {
+      "hz": 0.08,
+      "magnitude": 0.481016,
+      "power_fraction": 0.0069
+    },
+    {
+      "hz": 0.11,
+      "magnitude": 0.471359,
+      "power_fraction": 0.0066
+    },
+    {
+      "hz": 0.09,
+      "magnitude": 0.415766,
+      "power_fraction": 0.0052
+    },
+    {
+      "hz": 0.1,
+      "magnitude": 0.412597,
+      "power_fraction": 0.0051
+    },
+    {
+      "hz": 0.14,
+      "magnitude": 0.395566,
+      "power_fraction": 0.0047
+    }
+  ],
+  "energy_concentration": {
+    "top_1pct": 0.9158,
+    "top_5pct": 0.9825,
+    "top_10pct": 0.9914
+  },
+  "band_energy_fraction": {
+    "dc_sub_hz_0_5": 0.9817,
+    "launch_dynamics_0_5_15": 0.0183,
+    "vibration_15_50": 0.0,
+    "high_freq_noise_50_plus": 0.0
+  },
+  "gini_coefficient": 0.692,
+  "is_frequency_sparse": true,
+  "fft_compression_appropriate": true,
+  "assessment": "YES \u2014 energy concentrated in few bins; FFT thresholding should work well."
+}
