@@ -28,6 +28,32 @@ Error Evaluation (MSE, RMSE, SNR, Compression Ratio)
 Visualization & Reports
 ```
 
+## Signal Characterization (Before Compression Optimization)
+
+**Understand the signal first.** Run the full 10-step characterization study:
+
+```bash
+# One-command dashboard — raw plot, FFT, spectrogram, events, importance, error map
+python3 analyze_signal.py
+
+# Run specific steps
+python3 experiments/run_characterization.py --steps dataset,frequency,sensitivity,adaptive
+
+# Custom input file
+python3 analyze_signal.py --input data/raw/synthetic_rocket.csv
+```
+
+**Reports produced:**
+
+| Report | Description |
+|--------|-------------|
+| `reports/dataset_characterization.md` | Stats for every signal dataset |
+| `reports/noise_characterization.md` | Noise type detection + SNR |
+| `reports/reconstruction_failures.md` | Per-spike root cause analysis |
+| `reports/signal_research_answers.md` | 6 research questions with evidence |
+
+See [docs/signal_characterization.md](docs/signal_characterization.md) for the full study guide.
+
 ## Quick Start
 
 ```bash
@@ -58,14 +84,18 @@ python3 experiments/compare_v1_v2.py
 │   │   └── denoising/        # Multi-stage: median, spectral, Wiener, drift
 │   ├── ml/
 │   │   └── autoencoder.py    # 1D conv autoencoder compression
+│   ├── characterization/     # Signal study (dataset, FFT, events, sensitivity)
+│   ├── importance.py         # Per-sample importance mask (0–1)
 │   ├── pipeline.py           # CLI with --version v1|v2
 │   └── ...
+├── analyze_signal.py         # One-command characterization dashboard
+├── experiments/
+│   ├── compare_v1_v2.py      # Side-by-side benchmark script
+│   └── run_characterization.py  # Step-by-step characterization runner
 ├── docs/
 │   ├── progress.md           # v1 → v2 evolution timeline
-│   └── v1_architecture.md    # v1 API reference (preserved)
-├── experiments/
-│   └── compare_v1_v2.py      # Side-by-side benchmark script
-└── notebooks/                # 01–05 exploration notebooks
+│   ├── v1_architecture.md    # v1 API reference (preserved)
+│   └── signal_characterization.md  # 10-step signal study guide
 ```
 
 ## Methods
@@ -120,11 +150,13 @@ pytest tests/test_v2.py -v          # v2 improvement tests
 | `03_compression_testing.ipynb` | Method comparison |
 | `04_noise_analysis.ipynb` | Noise impact study |
 | `05_v2_ml_comparison.ipynb` | v1 vs v2 vs ML comparison |
+| `research/01_signal_characterization.ipynb` | Full 10-step characterization walkthrough |
 
 ## Documentation
 
 - [docs/progress.md](docs/progress.md) — Development timeline and v1→v2 changelog
 - [docs/v1_architecture.md](docs/v1_architecture.md) — Preserved v1 API reference
+- [docs/signal_characterization.md](docs/signal_characterization.md) — Signal study before compression optimization
 - [docs/repository_analysis.md](docs/repository_analysis.md) — Initial repository analysis
 
 ## License

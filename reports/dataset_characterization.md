@@ -17,4 +17,4 @@ Statistical investigation of every available signal dataset.
 - **Skewness** away from zero suggests asymmetric dynamics (e.g. thrust bias during launch).
 - **RMS vs std** divergence indicates DC offset (gravity baseline ~9.81 m/s² in pre-launch).
 
-Plots saved to `results/characterization/`.
+Plots saved to `/tmp/pytest-of-ubuntu/pytest-7/test_summary_json_written0/characterization/`.

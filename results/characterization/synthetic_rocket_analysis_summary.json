@@ -172,6 +172,7 @@
     "dashboard": "results/characterization/synthetic_rocket_dashboard.png",
     "dataset_report": "reports/dataset_characterization.md",
     "failures_report": "reports/reconstruction_failures.md",
+    "noise_report": "reports/noise_characterization.md",
     "research_answers": "reports/signal_research_answers.md",
     "frequency_dir": "results/frequency_analysis/"
   }

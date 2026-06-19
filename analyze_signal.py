@@ -33,7 +33,11 @@ from src.characterization.dataset import characterize_all_datasets, write_datase
 from src.characterization.events import detect_events
 from src.characterization.failures import analyze_reconstruction_failures
 from src.characterization.frequency_study import analyze_frequency_content
-from src.characterization.noise_characterization import characterize_noise
+from src.characterization.noise_characterization import (
+    characterize_noise,
+    plot_noise_diagnostics,
+    write_noise_report,
+)
 from src.characterization.sensitivity import local_compression_sensitivity
 from src.data_loader.loader import load_signal
 from src.generate_synthetic import create_synthetic_dataset
@@ -81,7 +85,9 @@ def _plot_dashboard(
     axes[1].grid(True, alpha=0.3)
 
     # 3. Spectrogram
-    axes[2].specgram(signal, NFFT=256, Fs=fs, noverlap=128, cmap="viridis")
+    nperseg = min(256, max(32, n // 8))
+    noverlap = nperseg // 2
+    axes[2].specgram(signal, NFFT=nperseg, Fs=fs, noverlap=noverlap, cmap="viridis")
     axes[2].set_ylabel("Frequency (Hz)")
     axes[2].set_title("3. Spectrogram")
     axes[2].set_ylim(0, min(80, fs / 2))
@@ -255,6 +261,8 @@ def analyze_signal(
     print("[8/10] Noise characterization...")
     noisy, _ = apply_all_noise(clean, seed=42)
     noise_char = characterize_noise(clean, noisy, fs, str(output_dir / "noise_characterization.json"))
+    plot_noise_diagnostics(clean, noisy, noise_char, str(output_dir / "noise_residual_diagnostics.png"))
+    write_noise_report(noise_char, "reports/noise_characterization.md", str(output_dir))
 
     print("[9/10] Failure analysis...")
     analyze_reconstruction_failures(time, clean, keep_percentage=0.10)
@@ -279,6 +287,7 @@ def analyze_signal(
             "dashboard": str(output_dir / f"{name}_dashboard.png"),
             "dataset_report": "reports/dataset_characterization.md",
             "failures_report": "reports/reconstruction_failures.md",
+            "noise_report": "reports/noise_characterization.md",
             "research_answers": "reports/signal_research_answers.md",
             "frequency_dir": "results/frequency_analysis/",
         },
