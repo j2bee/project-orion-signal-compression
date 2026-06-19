@@ -1,0 +1,35 @@
+{
+  "signal_power": 53.877167,
+  "noise_power": 0.260252,
+  "snr_db": 23.16,
+  "residual_std": 0.510059,
+  "detected_noise_types": [
+    "gaussian",
+    "quantization"
+  ],
+  "tests": {
+    "gaussian": {
+      "is_gaussian": true,
+      "shapiro_p": 0.1771
+    },
+    "impulse": {
+      "is_impulse": false,
+      "spike_fraction": 0.0005,
+      "spike_count": 1
+    },
+    "drift": {
+      "is_drift": false,
+      "slope": -9.61e-06,
+      "r_squared": 0.0001
+    },
+    "periodic": {
+      "is_periodic": false,
+      "dominant_hz": 3.18,
+      "strength_ratio": 2.74
+    },
+    "quantization": {
+      "is_quantization": true,
+      "hist_peak_ratio": 3.71
+    }
+  }
+}
