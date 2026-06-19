@@ -77,6 +77,15 @@ class TestNoiseChar:
         assert "snr_db" in result
         assert len(result["detected_noise_types"]) > 0
 
+    def test_noise_report(self, rocket_like_signal):
+        from src.characterization.noise_characterization import write_noise_report
+        _, signal = rocket_like_signal
+        noisy = signal + np.random.randn(len(signal)) * 0.5
+        result = characterize_noise(signal, noisy, 20.0)
+        report = write_noise_report(result)
+        assert "Noise Characterization" in report
+        assert "SNR" in report
+
 
 class TestAdaptiveExperiment:
     def test_uniform_vs_weighted(self, rocket_like_signal):

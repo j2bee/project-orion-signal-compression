@@ -123,3 +123,150 @@ def characterize_noise(
         json.dump(results, f, indent=2)
 
     return results
+
+
+def write_noise_report(
+    results: Dict,
+    output_path: str = "reports/noise_characterization.md",
+    plot_dir: str = "results/characterization",
+) -> str:
+    """
+    Write markdown noise characterization report with residual diagnostic plot.
+
+    Parameters
+    ----------
+    results : dict
+        Output of characterize_noise().
+    output_path : str
+        Markdown report path.
+    plot_dir : str
+        Directory for diagnostic plots.
+
+    Returns
+    -------
+    str
+        Report text.
+    """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    plot_dir = Path(plot_dir)
+    plot_dir.mkdir(parents=True, exist_ok=True)
+
+    tests = results.get("tests", {})
+    types = results.get("detected_noise_types", [])
+
+    lines = [
+        "# Noise Characterization Report",
+        "",
+        "Assessment of noise between clean reference and noisy observation.",
+        "",
+        "## Power and SNR",
+        "",
+        f"| Metric | Value |",
+        f"|--------|-------|",
+        f"| Signal power | {results.get('signal_power', 'N/A')} |",
+        f"| Noise power | {results.get('noise_power', 'N/A')} |",
+        f"| SNR | **{results.get('snr_db', 'N/A')} dB** |",
+        f"| Residual std | {results.get('residual_std', 'N/A')} |",
+        "",
+        "## Detected Noise Types",
+        "",
+    ]
+    for t in types:
+        lines.append(f"- **{t}**")
+    lines += [
+        "",
+        "## Test Results",
+        "",
+        "### Gaussian",
+        f"- Is Gaussian: {tests.get('gaussian', {}).get('is_gaussian', 'N/A')}",
+        f"- Shapiro-Wilk p-value: {tests.get('gaussian', {}).get('shapiro_p', 'N/A')}",
+        "",
+        "### Impulse",
+        f"- Is impulse: {tests.get('impulse', {}).get('is_impulse', 'N/A')}",
+        f"- Spike count: {tests.get('impulse', {}).get('spike_count', 'N/A')}",
+        f"- Spike fraction: {tests.get('impulse', {}).get('spike_fraction', 'N/A')}",
+        "",
+        "### Sensor Drift",
+        f"- Is drift: {tests.get('drift', {}).get('is_drift', 'N/A')}",
+        f"- Slope: {tests.get('drift', {}).get('slope', 'N/A')}",
+        f"- R²: {tests.get('drift', {}).get('r_squared', 'N/A')}",
+        "",
+        "### Periodic Interference",
+        f"- Is periodic: {tests.get('periodic', {}).get('is_periodic', 'N/A')}",
+        f"- Dominant frequency: {tests.get('periodic', {}).get('dominant_hz', 'N/A')} Hz",
+        f"- Strength ratio: {tests.get('periodic', {}).get('strength_ratio', 'N/A')}",
+        "",
+        "### Quantization",
+        f"- Is quantization: {tests.get('quantization', {}).get('is_quantization', 'N/A')}",
+        f"- Histogram peak ratio: {tests.get('quantization', {}).get('hist_peak_ratio', 'N/A')}",
+        "",
+        "## Interpretation",
+        "",
+        "- **Gaussian** residuals suggest additive white noise — Wiener/spectral subtraction effective.",
+        "- **Impulse** spikes require median filtering before spectral methods.",
+        "- **Sensor drift** needs detrending or high-pass filtering.",
+        "- **Periodic interference** may need notch filtering at the dominant frequency.",
+        "- **Quantization** noise limits effective bit depth — consider μ-law companding.",
+        "",
+        f"Diagnostic plot: `{plot_dir}/noise_residual_diagnostics.png`",
+        "",
+    ]
+
+    report = "\n".join(lines)
+    out = Path(output_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(report)
+    return report
+
+
+def plot_noise_diagnostics(
+    clean: np.ndarray,
+    noisy: np.ndarray,
+    results: Dict,
+    output_path: str = "results/characterization/noise_residual_diagnostics.png",
+) -> str:
+    """Plot residual histogram and spectrum for noise report."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    n = min(len(clean), len(noisy))
+    residual = noisy[:n] - clean[:n]
+
+    fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+
+    axes[0, 0].plot(residual[: min(2000, n)], linewidth=0.5, color="steelblue")
+    axes[0, 0].set_title("Residual (first 2000 samples)")
+    axes[0, 0].set_xlabel("Sample")
+    axes[0, 0].grid(True, alpha=0.3)
+
+    axes[0, 1].hist(residual, bins=60, color="darkorange", edgecolor="white", alpha=0.8)
+    axes[0, 1].set_title("Residual Histogram")
+    axes[0, 1].set_xlabel("Amplitude")
+
+    resid_spectrum = np.abs(np.fft.rfft(residual))
+    axes[1, 0].plot(resid_spectrum[: len(resid_spectrum) // 4], linewidth=0.6, color="green")
+    axes[1, 0].set_title("Residual Spectrum (low quarter)")
+    axes[1, 0].set_xlabel("Bin")
+
+    types = ", ".join(results.get("detected_noise_types", []))
+    axes[1, 1].axis("off")
+    axes[1, 1].text(
+        0.05, 0.85,
+        f"SNR: {results.get('snr_db', 'N/A')} dB\n"
+        f"Signal power: {results.get('signal_power', 'N/A')}\n"
+        f"Noise power: {results.get('noise_power', 'N/A')}\n"
+        f"Types: {types}",
+        fontsize=12, verticalalignment="top", family="monospace",
+    )
+
+    fig.suptitle("Noise Characterization Diagnostics", fontsize=13)
+    fig.tight_layout()
+    out = Path(output_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out, dpi=120, bbox_inches="tight")
+    plt.close(fig)
+    return str(out)

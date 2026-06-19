@@ -4,7 +4,7 @@ from .dataset import characterize_all_datasets, write_dataset_report
 from .events import detect_events
 from .frequency_study import analyze_frequency_content
 from .sensitivity import local_compression_sensitivity
-from .noise_characterization import characterize_noise
+from .noise_characterization import characterize_noise, write_noise_report, plot_noise_diagnostics
 from .failures import analyze_reconstruction_failures
 from .adaptive_experiment import run_adaptive_compression_experiment
 
@@ -15,6 +15,8 @@ __all__ = [
     "analyze_frequency_content",
     "local_compression_sensitivity",
     "characterize_noise",
+    "write_noise_report",
+    "plot_noise_diagnostics",
     "analyze_reconstruction_failures",
     "run_adaptive_compression_experiment",
 ]

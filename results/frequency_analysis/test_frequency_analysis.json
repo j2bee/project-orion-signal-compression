@@ -5,82 +5,82 @@
   "dominant_frequencies": [
     {
       "hz": 0.0,
-      "magnitude": 3.617089,
-      "power_fraction": 0.3905
+      "magnitude": 3.615945,
+      "power_fraction": 0.3906
     },
     {
       "hz": 0.01,
-      "magnitude": 2.532573,
-      "power_fraction": 0.1915
+      "magnitude": 2.531455,
+      "power_fraction": 0.1914
     },
     {
       "hz": 0.02,
-      "magnitude": 2.257709,
-      "power_fraction": 0.1522
+      "magnitude": 2.256676,
+      "power_fraction": 0.1521
     },
     {
       "hz": 0.03,
-      "magnitude": 1.782595,
-      "power_fraction": 0.0949
+      "magnitude": 1.781703,
+      "power_fraction": 0.0948
     },
     {
       "hz": 0.04,
-      "magnitude": 1.191922,
+      "magnitude": 1.191166,
       "power_fraction": 0.0424
     },
     {
       "hz": 0.05,
-      "magnitude": 0.684313,
+      "magnitude": 0.68351,
       "power_fraction": 0.014
     },
     {
       "hz": 0.12,
-      "magnitude": 0.515595,
-      "power_fraction": 0.0079
+      "magnitude": 0.516394,
+      "power_fraction": 0.008
     },
     {
       "hz": 0.07,
-      "magnitude": 0.514235,
+      "magnitude": 0.513159,
       "power_fraction": 0.0079
     },
     {
       "hz": 0.06,
-      "magnitude": 0.497112,
+      "magnitude": 0.496062,
       "power_fraction": 0.0074
     },
     {
       "hz": 0.13,
-      "magnitude": 0.490042,
+      "magnitude": 0.490837,
       "power_fraction": 0.0072
     },
     {
       "hz": 0.08,
-      "magnitude": 0.481016,
+      "magnitude": 0.480105,
       "power_fraction": 0.0069
     },
     {
       "hz": 0.11,
-      "magnitude": 0.471359,
-      "power_fraction": 0.0066
+      "magnitude": 0.472012,
+      "power_fraction": 0.0067
     },
     {
       "hz": 0.09,
-      "magnitude": 0.415766,
+      "magnitude": 0.41532,
       "power_fraction": 0.0052
     },
     {
       "hz": 0.1,
-      "magnitude": 0.412597,
+      "magnitude": 0.412821,
       "power_fraction": 0.0051
     },
     {
       "hz": 0.14,
-      "magnitude": 0.395566,
+      "magnitude": 0.396288,
       "power_fraction": 0.0047
     }
   ],
   "energy_concentration": {
-    "top_1pct": 0.9158,
+    "top_1pct": 0.9156,
     "top_5pct": 0.9825,
     "top_10pct": 0.9914
   },
@@ -90,7 +90,7 @@
     "vibration_15_50": 0.0,
     "high_freq_noise_50_plus": 0.0
   },
-  "gini_coefficient": 0.692,
+  "gini_coefficient": 0.6919,
   "is_frequency_sparse": true,
   "fft_compression_appropriate": true,
   "assessment": "YES \u2014 energy concentrated in few bins; FFT thresholding should work well."
