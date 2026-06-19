@@ -1,0 +1,33 @@
+{
+  "version": "v2",
+  "input": "data/raw/synthetic_rocket.csv",
+  "method": "hybrid",
+  "compression_rate": 0.85,
+  "wavelet": null,
+  "metrics": {
+    "compression_ratio": 2.66,
+    "mse": 2.6e-05,
+    "rmse": 0.005139,
+    "snr_db": 51.02
+  },
+  "metadata": {
+    "sampling_frequency": 200.0,
+    "n_samples": 20000,
+    "duration": 99.995,
+    "mean": 3.6331108203664537,
+    "std": 6.4094264851227445,
+    "min": -1.6561175765113243,
+    "max": 42.02566537687231,
+    "peak_to_peak": 43.68178295338364
+  },
+  "noise_applied": true,
+  "filter_applied": true,
+  "execution_time_seconds": 1.227,
+  "plots": {
+    "original": "results/v2/plots/pipeline_v2_original.png",
+    "noisy": "results/v2/plots/pipeline_v2_noisy.png",
+    "filtered": "results/v2/plots/pipeline_v2_filtered.png",
+    "reconstructed": "results/v2/plots/pipeline_v2_reconstructed.png",
+    "comparison": "results/v2/plots/pipeline_v2_comparison.png"
+  }
+}

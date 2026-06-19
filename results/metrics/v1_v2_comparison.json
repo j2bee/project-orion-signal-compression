@@ -1,0 +1,58 @@
+{
+  "denoising": {
+    "v1_butterworth": {
+      "snr_db": -8.29,
+      "mse": 366.081162
+    },
+    "v2_multistage": {
+      "snr_db": 0.38,
+      "mse": 49.696913
+    }
+  },
+  "compression_v1": [
+    {
+      "method": "fft_10pct",
+      "mse": 1.030405,
+      "snr_db": 26.95,
+      "compression_ratio": 6.67
+    },
+    {
+      "method": "wavelet_db4_10pct",
+      "mse": 0.093214,
+      "snr_db": 37.38,
+      "compression_ratio": 9.99
+    },
+    {
+      "method": "quantization_8bit",
+      "mse": 0.004702,
+      "snr_db": 50.36,
+      "compression_ratio": 7.99
+    }
+  ],
+  "compression_v2": [
+    {
+      "method": "adaptive_fft_90pct_energy",
+      "mse": 0.33297,
+      "snr_db": 10.02,
+      "compression_ratio": 82.3
+    },
+    {
+      "method": "soft_wavelet_10pct",
+      "mse": 2.7e-05,
+      "snr_db": 50.96,
+      "compression_ratio": 2.7
+    },
+    {
+      "method": "mulaw_8bit",
+      "mse": 0.000581,
+      "snr_db": 37.6,
+      "compression_ratio": 7.99
+    },
+    {
+      "method": "hybrid_85pct",
+      "mse": 2.6e-05,
+      "snr_db": 51.02,
+      "compression_ratio": 2.66
+    }
+  ]
+}

@@ -35,6 +35,29 @@ def estimate_compressed_size(compressed: Dict) -> int:
         n = compressed["n_samples"]
         return n * bits // 8 + 16  # +16 for min/max metadata
 
+    elif method == "adaptive_fft":
+        n_kept = compressed["n_coeffs_kept"]
+        return n_kept * (16 + 8)
+
+    elif method == "soft_wavelet":
+        n_kept = compressed["n_coeffs_kept"]
+        return n_kept * 8
+
+    elif method == "mulaw":
+        bits = compressed["bits"]
+        n = compressed["n_samples"]
+        return n * bits // 8 + 24  # +24 for peak/mu metadata
+
+    elif method == "hybrid":
+        fft_size = estimate_compressed_size(compressed["fft"])
+        wavelet_size = estimate_compressed_size(compressed["wavelet_residual"])
+        return fft_size + wavelet_size
+
+    elif method == "ml":
+        n_patches = compressed["n_patches"]
+        latent_dim = compressed["latent_dim"]
+        return n_patches * latent_dim * 4  # float32 latents
+
     return 0
 
 
