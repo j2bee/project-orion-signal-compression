@@ -4,6 +4,8 @@
 
 Project Orion is a modular signal processing pipeline for rocket telemetry compression. It loads sensor data, simulates realistic noise, filters and preprocesses signals, applies compression algorithms, reconstructs the original waveform, and quantifies degradation with standard metrics.
 
+> **Version note:** v1 baseline code is preserved unchanged in `src/compression/`, `src/preprocessing/`, and `src/reconstruction/` as a progress reference. v2 improvements live in `src/v2/` and `src/ml/`. See [docs/progress.md](docs/progress.md) for the full evolution timeline.
+
 ## Pipeline Overview
 
 ```
@@ -13,13 +15,13 @@ Signal Loading (CSV / TXT / NumPy)
       ↓
 Noise Simulation (Gaussian, Impulse, Drift)
       ↓
-Preprocessing (Normalization, Filtering)
+Preprocessing / Denoising (v1: Butterworth | v2: Multi-stage)
       ↓
-Compression (FFT / Wavelet / Quantization)
+Compression (FFT / Wavelet / Quantization / ML)
       ↓
 Transmission / Storage
       ↓
-Reconstruction (Inverse Transform)
+Reconstruction (Inverse Transform / Neural Decoder)
       ↓
 Error Evaluation (MSE, RMSE, SNR, Compression Ratio)
       ↓
@@ -29,108 +31,101 @@ Visualization & Reports
 ## Quick Start
 
 ```bash
-# Install dependencies
 pip install -r requirements.txt
 
-# Generate synthetic rocket telemetry and run the pipeline
-python src/pipeline.py --generate-data --compression fft --compression_rate 0.1
+# v2 improved pipeline (default)
+python3 src/pipeline.py --generate-data --compression adaptive_fft --compression_rate 0.90
 
-# Run with wavelet compression
-python src/pipeline.py --input data/raw/synthetic_rocket.csv --compression wavelet --compression_rate 0.1 --wavelet db4
+# v1 baseline for comparison
+python3 src/pipeline.py --version v1 --compression fft --compression_rate 0.1
 
-# Run with quantization (8-bit)
-python src/pipeline.py --input data/raw/synthetic_rocket.csv --compression quantization --compression_rate 8
+# ML autoencoder compression
+python3 src/pipeline.py --compression ml --compression_rate 32 --ml-epochs 50
+
+# Compare v1 vs v2 benchmarks
+python3 experiments/compare_v1_v2.py
 ```
 
 ## Project Structure
 
 ```
-├── data/
-│   ├── raw/              # Input signals (CSV, TXT, NPY)
-│   ├── processed/        # Intermediate processed signals
-│   ├── noisy/            # Noise-corrupted signals
-│   └── reconstructed/    # Reconstructed output signals
 ├── src/
-│   ├── data_loader/      # Universal signal loader + validation
-│   ├── preprocessing/    # Normalization, filtering, noise models
-│   ├── compression/      # FFT, wavelet, quantization algorithms
-│   ├── reconstruction/   # Unified inverse transform interface
-│   ├── metrics/          # MSE, RMSE, SNR, compression ratio
-│   ├── visualization/    # Time/frequency domain plots
-│   ├── pipeline.py       # End-to-end experiment runner
-│   └── generate_synthetic.py  # Synthetic rocket telemetry generator
-├── notebooks/            # Jupyter exploration notebooks
-├── experiments/          # Experiment configurations
-├── results/
-│   ├── plots/            # Generated visualization plots
-│   └── metrics/          # JSON metric reports
-├── tests/                # Unit tests
-└── docs/                 # Documentation
+│   ├── compression/          # v1 baseline (preserved)
+│   ├── preprocessing/        # v1 baseline (preserved)
+│   ├── reconstruction/       # Unified interface (v1 + v2 dispatch)
+│   ├── v2/
+│   │   ├── compression/      # Adaptive FFT, soft wavelet, μ-law, hybrid
+│   │   └── denoising/        # Multi-stage: median, spectral, Wiener, drift
+│   ├── ml/
+│   │   └── autoencoder.py    # 1D conv autoencoder compression
+│   ├── pipeline.py           # CLI with --version v1|v2
+│   └── ...
+├── docs/
+│   ├── progress.md           # v1 → v2 evolution timeline
+│   └── v1_architecture.md    # v1 API reference (preserved)
+├── experiments/
+│   └── compare_v1_v2.py      # Side-by-side benchmark script
+└── notebooks/                # 01–05 exploration notebooks
 ```
 
-## Current Methods
+## Methods
 
-| Method | Status | Description |
-|--------|--------|-------------|
-| FFT Compression | Complete | Frequency-domain thresholding, configurable keep % |
-| Wavelet Compression | Complete | Haar / Daubechies with coefficient thresholding |
-| Quantization | Complete | 8-bit and 16-bit float-to-int mapping |
-| Noise Filtering | Complete | Moving average, Butterworth, Savitzky-Golay |
-| Noise Simulation | Complete | Gaussian, impulse, sensor drift models |
-| ML Compression | Future | Neural autoencoder-based compression |
+| Method | Version | Status | Description |
+|--------|---------|--------|-------------|
+| FFT Compression | v1 | Complete | Top-N magnitude coefficient selection |
+| Wavelet Compression | v1 | Complete | Hard threshold by keep-percentage |
+| Quantization | v1 | Complete | Linear 8/16-bit mapping |
+| **Adaptive FFT** | **v2** | **Complete** | Energy-preserving coefficient selection |
+| **Soft Wavelet** | **v2** | **Complete** | Donoho-Johnstone soft thresholding |
+| **μ-law Quantization** | **v2** | **Complete** | Companded quantization for spike preservation |
+| **Hybrid FFT+Wavelet** | **v2** | **Complete** | Two-stage with residual encoding |
+| **Multi-stage Denoising** | **v2** | **Complete** | Median → spectral → Wiener → drift → adaptive LP |
+| **ML Autoencoder** | **v2** | **Complete** | Self-supervised 1D conv autoencoder |
 
-## Compression Methods
+## v2 Improvements Summary
 
-### FFT Compression
-Retains the largest-magnitude frequency coefficients and zeroes the rest. Configurable keep percentages: 1%, 5%, 10%, 25%, 50%.
-
-### Wavelet Compression
-Uses PyWavelets for multi-resolution decomposition. Supports Haar, Daubechies (db4, db8), and other wavelet families. Hard-thresholds small coefficients.
-
-### Quantization
-Maps 64-bit float samples to 8-bit or 16-bit integers. Measures pure precision loss without transform coding.
+| Area | v1 | v2 |
+|------|----|----|
+| Denoising | Single Butterworth (15 Hz) | 5-stage pipeline (impulse, spectral, Wiener, drift, adaptive LP) |
+| FFT | Fixed keep-% by count | Energy-adaptive selection |
+| Wavelet | Hard threshold | Soft threshold (universal) |
+| Quantization | Linear | μ-law companding |
+| ML | — | Convolutional autoencoder with latent bottleneck |
 
 ## Metrics
 
-Every experiment produces:
-
 | Metric | Description |
 |--------|-------------|
-| **MSE** | Mean Squared Error — average squared reconstruction error |
-| **RMSE** | Root MSE — same units as signal amplitude |
-| **SNR** | Signal-to-Noise Ratio in dB — higher is better |
+| **MSE** | Mean Squared Error |
+| **RMSE** | Root MSE (same units as signal) |
+| **SNR** | Signal-to-Noise Ratio in dB |
 | **Compression Ratio** | Original size / compressed size |
 
-Results are saved to `results/final_report.json`.
+Results saved to `results/final_report.json`.
 
 ## Running Tests
 
 ```bash
-pytest tests/ -v
+pytest tests/ -v                    # All tests (v1 + v2)
+pytest tests/test_pipeline.py -v    # v1 baseline tests
+pytest tests/test_v2.py -v          # v2 improvement tests
 ```
 
 ## Notebooks
 
 | Notebook | Description |
 |----------|-------------|
-| `01_signal_exploration.ipynb` | Load, visualize, noise, filter, compress, reconstruct |
-| `02_fft_analysis.ipynb` | FFT compression parameter sweep |
-| `03_compression_testing.ipynb` | Compare all compression methods |
-| `04_noise_analysis.ipynb` | Noise model impact on reconstruction |
+| `01_signal_exploration.ipynb` | Full v1 walkthrough |
+| `02_fft_analysis.ipynb` | FFT parameter sweep |
+| `03_compression_testing.ipynb` | Method comparison |
+| `04_noise_analysis.ipynb` | Noise impact study |
+| `05_v2_ml_comparison.ipynb` | v1 vs v2 vs ML comparison |
 
-## Example Output
+## Documentation
 
-```
-Method: fft
-Compression: 8.5x
-MSE: 0.002341
-RMSE: 0.048383
-SNR: 34.2 dB
-```
-
-## Legacy Research
-
-Previous work on QAPF (Quadrature Amplitude Phase Filtering) and TV Baseline filters is preserved in `src/compression.py` and `src/filtering.py` for future integration.
+- [docs/progress.md](docs/progress.md) — Development timeline and v1→v2 changelog
+- [docs/v1_architecture.md](docs/v1_architecture.md) — Preserved v1 API reference
+- [docs/repository_analysis.md](docs/repository_analysis.md) — Initial repository analysis
 
 ## License
 
