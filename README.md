@@ -141,6 +141,18 @@ pytest tests/test_pipeline.py -v    # v1 baseline tests
 pytest tests/test_v2.py -v          # v2 improvement tests
 ```
 
+## Git Identity
+
+All commits should be attributed to **John Bee &lt;jnbee2010@gmail.com&gt;**. After cloning, run:
+
+```bash
+git config user.name "John Bee"
+git config user.email "jnbee2010@gmail.com"
+git config core.hooksPath githooks
+```
+
+See [githooks/README.md](githooks/README.md) for details.
+
 ## Notebooks
 
 | Notebook | Description |
