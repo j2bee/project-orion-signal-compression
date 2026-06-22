@@ -1,0 +1,14 @@
+{
+  "n_packets": 40,
+  "total_samples": 20000,
+  "compression_ratio": 6.83,
+  "avg_latency_ms": 0.026,
+  "max_latency_ms": 0.127,
+  "total_compress_time_s": 0.0007,
+  "total_decompress_time_s": 0.0003,
+  "peak_memory_samples": 512,
+  "mse": 0.03042722,
+  "snr_db": 32.82,
+  "packet_size": 512,
+  "keep_percentage": 0.1
+}

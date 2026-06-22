@@ -1,0 +1,6 @@
+{
+  "method": "fft",
+  "n_coeffs_kept": 1000,
+  "n_coeffs_total": 10001,
+  "keep_percentage": 0.1
+}

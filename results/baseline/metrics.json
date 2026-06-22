@@ -1,0 +1,21 @@
+{
+  "method": "fft_10pct_baseline",
+  "compression_ratio": 6.67,
+  "compressed_bytes": 24000,
+  "mse_vs_filtered": 0.59898523,
+  "rmse_vs_filtered": 0.77394136,
+  "snr_vs_filtered_db": 28.04,
+  "mse_vs_clean": 235.93556117,
+  "snr_vs_clean_db": -6.07,
+  "runtime_seconds": 0.0005,
+  "metadata": {
+    "sampling_frequency": 200.0,
+    "n_samples": 20000,
+    "duration": 99.995,
+    "mean": 4.1132054109900205,
+    "std": 6.42987743524173,
+    "min": -1.5654468167293107,
+    "max": 32.65672999789793,
+    "peak_to_peak": 34.22217681462725
+  }
+}

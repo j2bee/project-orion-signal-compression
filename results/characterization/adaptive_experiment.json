@@ -1,0 +1,19 @@
+{
+  "uniform": {
+    "keep_percentage": 0.1,
+    "mse": 0.65489367,
+    "snr_db": 19.15,
+    "compression_ratio": 1.0
+  },
+  "importance_weighted": {
+    "high_keep": 0.5,
+    "low_keep": 0.05,
+    "mse": 0.14292568,
+    "snr_db": 25.76,
+    "compression_ratio": 1.0
+  },
+  "improvement": {
+    "snr_gain_db": 6.61,
+    "mse_reduction_factor": 4.58
+  }
+}

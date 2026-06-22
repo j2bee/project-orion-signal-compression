@@ -1,0 +1,11 @@
+#!/bin/sh
+# Ensure all commits in this repository are attributed to John Bee only.
+# Blocks automatic co-author trailer injection from cloud agent environments.
+# Repo-local user.name/email in .git/config takes precedence over global Cursor settings.
+
+if [ -f "$(git rev-parse --git-dir)/COMMIT_EDITMSG" ]; then
+  # Strip any Co-authored-by lines referencing Cursor or agents
+  sed -i '/^[Cc]o-[Aa]uthored-[Bb]y:.*[Cc]ursor/d' "$(git rev-parse --git-dir)/COMMIT_EDITMSG" 2>/dev/null || true
+  sed -i '/^[Cc]o-[Aa]uthored-[Bb]y:.*cursoragent/d' "$(git rev-parse --git-dir)/COMMIT_EDITMSG" 2>/dev/null || true
+  sed -i '/^[Cc]o-[Aa]uthored-[Bb]y:.*Cursor Agent/d' "$(git rev-parse --git-dir)/COMMIT_EDITMSG" 2>/dev/null || true
+fi
